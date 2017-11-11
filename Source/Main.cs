@@ -18,6 +18,7 @@ namespace AdjustableColoredLights
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             Log.Message("AdjustableColoredLights: Adding Harmony Postfix to CompGlower.CompGetGizmosExtra");
+            Log.Message("AdjustableColoredLights: Adding Harmony Postfix to CompGlower.PostExposeData");
 
             IconTexture = ContentFinder<Texture2D>.Get("UI/changecolor", true);
 
@@ -55,6 +56,27 @@ namespace AdjustableColoredLights
                 Color rgb = __instance.Props.glowColor.ToColor;
 
                 __result = l;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(CompGlower), "PostExposeData")]
+    static class CompGlower_PostExposeData
+    {
+        static void Postfix(CompGlower __instance)
+        {
+            string defName = __instance.parent?.def.defName;
+            if (defName != null &&
+                (defName.Contains("Light") || defName.Contains("Lamp")))
+            {
+                ColorInt c = __instance.Props.glowColor;
+                int r = c.r;
+                int g = c.g;
+                int b = c.b;
+                Scribe_Values.Look<int>(ref r, "glowColor.r", 0, false);
+                Scribe_Values.Look<int>(ref g, "glowColor.g", 0, false);
+                Scribe_Values.Look<int>(ref b, "glowColor.b", 0, false);
+                __instance.Props.glowColor = new ColorInt(r, g, b);
             }
         }
     }
