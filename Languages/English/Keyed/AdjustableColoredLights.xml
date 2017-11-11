@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<AdjustableColoredLights.ChangeColor>Change Color</AdjustableColoredLights.ChangeColor>
+	<AdjustableColoredLights.ChangeColorDesc>Change the color of the light.</AdjustableColoredLights.ChangeColorDesc>
+	
+	<AdjustableColoredLights.R>R</AdjustableColoredLights.R>
+	<AdjustableColoredLights.G>G</AdjustableColoredLights.G>
+	<AdjustableColoredLights.B>B</AdjustableColoredLights.B>
+	<AdjustableColoredLights.H>H</AdjustableColoredLights.H>
+	<AdjustableColoredLights.S>S</AdjustableColoredLights.S>
+	<AdjustableColoredLights.L>L</AdjustableColoredLights.L>
+</LanguageData>
