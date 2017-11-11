@@ -35,7 +35,7 @@ namespace AdjustableColoredLights
         {
             string defName = __instance.parent?.def.defName;
             if (defName != null &&
-                (defName.Contains("Light") || defName.Contains("Lamp")))
+                (defName.StartsWith("StandingLamp_") || defName.Contains("Adjustable")))
             {
                 List<Gizmo> l = new List<Gizmo>();
                 if (__result != null)
@@ -67,7 +67,7 @@ namespace AdjustableColoredLights
         {
             string defName = __instance.parent?.def.defName;
             if (defName != null &&
-                (defName.Contains("Light") || defName.Contains("Lamp")))
+                (defName.StartsWith("StandingLamp_") || defName.Contains("Adjustable")))
             {
                 ColorInt c = __instance.Props.glowColor;
                 int r = c.r;
