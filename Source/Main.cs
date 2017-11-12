@@ -1,4 +1,5 @@
 ﻿using Harmony;
+using RimWorld;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace AdjustableColoredLights
     {
         internal static Texture2D IconTexture;
         internal static Texture2D BlackTexture;
+
+        public static bool IsColoredLightsResearched = false;
 
         static Main()
         {
@@ -34,8 +37,8 @@ namespace AdjustableColoredLights
         static void Postfix(CompGlower __instance, ref IEnumerable<Gizmo> __result)
         {
             string defName = __instance.parent?.def.defName;
-            if (defName != null &&
-                (defName.StartsWith("StandingLamp_") || defName.Contains("Adjustable")))
+            if (defName != null && Main.IsColoredLightsResearched &&
+                (defName.Contains("Lamp") || defName.Contains("Light")))
             {
                 List<Gizmo> l = new List<Gizmo>();
                 if (__result != null)
@@ -50,10 +53,8 @@ namespace AdjustableColoredLights
                     defaultLabel = "AdjustableColoredLights.ChangeColor".Translate(),
                     activateSound = SoundDef.Named("Click"),
                     action = delegate { Find.WindowStack.Add(new Dialog_FloatColorPicker(__instance)); },
-                    groupKey = 887767542
+                    groupKey = "AdjustableColoredLights".GetHashCode()
                 });
-
-                Color rgb = __instance.Props.glowColor.ToColor;
 
                 __result = l;
             }
@@ -77,6 +78,31 @@ namespace AdjustableColoredLights
                 Scribe_Values.Look<int>(ref g, "glowColor.g", 0, false);
                 Scribe_Values.Look<int>(ref b, "glowColor.b", 0, false);
                 __instance.Props.glowColor = new ColorInt(r, g, b);
+            }
+        }
+    }
+
+    /*[HarmonyPatch(typeof(Game), "InitNewGame")]
+    static class Patch_Game_InitNewGame
+    {
+        static void Postfix()
+        {
+            Main.IsColoredLightsResearched = false;
+        }
+    }*/
+
+    [HarmonyPatch(typeof(ResearchManager), "ReapplyAllMods")]
+    static class Patch_ResearchManager_ReapplyAllMods
+    {
+        static void Postfix()
+        {
+            foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefs)
+            {
+                if (def.defName.Equals("ColoredLights"))
+                {
+                    Main.IsColoredLightsResearched = def.IsFinished;
+                    return;
+                }
             }
         }
     }
