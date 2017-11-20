@@ -29,6 +29,15 @@ namespace AdjustableColoredLights
             BlackTexture.SetPixels(new Color[] { new Color(0.0823f, 0.098f, 0.1137f) });
             BlackTexture.Apply();
         }
+
+        public static bool IsLight(Thing t)
+        {
+            string defName = t?.def.defName;
+            return 
+                defName != null && 
+                Main.IsColoredLightsResearched &&
+                (defName.Contains("Lamp") || defName.Contains("Light"));
+        }
     }
 
     [HarmonyPatch(typeof(CompGlower), "CompGetGizmosExtra")]
@@ -36,9 +45,7 @@ namespace AdjustableColoredLights
     {
         static void Postfix(CompGlower __instance, ref IEnumerable<Gizmo> __result)
         {
-            string defName = __instance.parent?.def.defName;
-            if (defName != null && Main.IsColoredLightsResearched &&
-                (defName.Contains("Lamp") || defName.Contains("Light")))
+            if (Main.IsLight(__instance.parent))
             {
                 List<Gizmo> l = new List<Gizmo>();
                 if (__result != null)
@@ -66,9 +73,7 @@ namespace AdjustableColoredLights
     {
         static void Postfix(CompGlower __instance)
         {
-            string defName = __instance.parent?.def.defName;
-            if (defName != null &&
-                (defName.StartsWith("StandingLamp_") || defName.Contains("Adjustable")))
+            if (Main.IsLight(__instance.parent))
             {
                 ColorInt c = __instance.Props.glowColor;
                 int r = c.r;
